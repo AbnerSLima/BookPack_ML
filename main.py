@@ -1,8 +1,3 @@
-# pip install streamlit
-# cd C:\Projetos_VS_Code\BabyGrowth
-# venv\Scripts\Activate (PowerShell)
-# streamlit run main.py (python -m streamlit run main.py)
-
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,25 +14,16 @@ dados = np.array([
     ["Eduardo", 2, 2.0], ["Ana", 1, 1.2], ["Otávio", 5, 4.9],
     ["Davi", 10, 8.6], ["Fernanda", 2, 2.3],  ["Ester", 10, 8.8],
     ["Zeca", 8, 6.9], ["Benício", 9, 8.0], ["Vanessa", 7, 6.2],
-    ["Daniela", 2, 2.1], ["Patrícia", 6, 5.5],
-    ["Camila", 9, 7.7],
-    ["Gabriel", 3, 2.9],
-    ["Marcos", 5, 4.6],
-    ["Bruno", 1, 1.0],
-    ["Natália", 5, 4.5],
-    ["Thiago", 7, 6.4],
-    ["Xavier", 8, 7.1],
-    ["Larissa", 4, 3.6],
-    ["Ricardo", 6, 5.8],
-    ["Kaio", 4, 4.0],
-    ["Sabrina", 6, 5.3],
-    ["Juliana", 4, 3.8],
-    ["William", 7, 6.7]
+    ["Daniela", 2, 2.1], ["Patrícia", 6, 5.5], ["Camila", 9, 7.7],
+    ["Gabriel", 3, 2.9], ["Marcos", 5, 4.6], ["Bruno", 1, 1.0],
+    ["Natália", 5, 4.5], ["Thiago", 7, 6.4], ["Xavier", 8, 7.1],
+    ["Larissa", 4, 3.6], ["Ricardo", 6, 5.8], ["Kaio", 4, 4.0],
+    ["Sabrina", 6, 5.3], ["Juliana", 4, 3.8], ["William", 7, 6.7]
 ])
 
 # Separando X (quantidade de livros) e Y (peso da mochila)
-X = dados[:, 0].reshape(-1, 1)  # Quantidade de livros
-Y = dados[:, 1]  # Peso da mochila
+X = dados[:, 1].reshape(-1, 1)  # Quantidade de livros
+Y = dados[:, 2]  # Peso da mochila
 
 # Criando e treinando o modelo de regressão linear
 modelo = LinearRegression()
