@@ -1,8 +1,9 @@
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.cluster import KMeans
 
 # Configuração da página
 st.set_page_config(page_title="🎒 Peso da Mochila", layout="centered")
@@ -64,26 +65,34 @@ with aba1:
     # Aba Previsão
     with aba3:
         st.title("🎒 Estimativa do Peso da Mochila")
-        st.write("📚 Informe a quantidade de livros na mochila para obter a estimativa de peso.")
+        st.write("Informe a quantidade de livros na mochila para obter a estimativa de peso.")
 
-        quantidade_livros = st.number_input("Quantidade de livros:", min_value=1, max_value=10, step=1)
+        quantidade_livros = st.number_input("📚 Quantidade de livros:", min_value=1, max_value=10, step=1)
 
         if st.button("Estimar Peso"):
             novo_valor = np.array([[quantidade_livros]])
             peso_estimado = modelo.predict(novo_valor)
             st.success(f"📖 Com {quantidade_livros} livros, a mochila deve pesar cerca de {peso_estimado[0]:.2f} kg.")
 
-            # Gerando gráfico
-            plt.scatter(X, Y, color='blue', label="Dados Reais")
-            plt.plot(X, modelo.predict(X), color='red', label="Regressão Linear")
-            plt.scatter(novo_valor, peso_estimado, color='green', marker='o', label="Previsão")
-            plt.xlabel("Quantidade de Livros")
-            plt.ylabel("Peso da Mochila (kg)")
-            plt.legend()
-            plt.title("Estimativa do Peso da Mochila")
+            # Criando o gráfico
+            fig, ax = plt.subplots(figsize=(8, 5))  # Definir tamanho do gráfico
+
+            ax.scatter(X, Y, color='blue', label="Dados Reais")  # Pontos reais
+            ax.plot(X, modelo.predict(X), color='red', linestyle='dashed', label="Regressão Linear")  # Linha de regressão
+            ax.scatter(novo_valor, peso_estimado, color='green', marker='o', s=100, label="Previsão")  # Previsão
+
+            ax.set_xlabel("Quantidade de Livros", fontsize=12)
+            ax.set_ylabel("Peso da Mochila (kg)", fontsize=12)
+            ax.set_title("Estimativa do Peso da Mochila", fontsize=14)
+            ax.legend()
+            ax.grid(True, linestyle='--', alpha=0.6)  # Adiciona um grid para melhor visualização
+
+            # Ajustar layout para evitar cortes
+            fig.tight_layout()
 
             # Exibir gráfico no Streamlit
-            st.pyplot(plt)
+            st.pyplot(fig)
+
 
     # Aba Parâmetros do Modelo
     with aba4:
@@ -98,5 +107,57 @@ with aba1:
 
 # Aba Modelo Não Supervisionado
 with aba2:
-    st.title("🏗️ Parâmetros da Regressão Linear")
-    
+    # Extraindo apenas o peso da mochila para treinar o modelo
+    Y = dados[:, 2].astype(float).reshape(-1, 1)  # Peso da mochila como matriz
+
+    # Criando um DataFrame para exibição no Streamlit
+    df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)"])
+
+    # Criando o modelo K-Means com 3 clusters
+    kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+    kmeans.fit(Y)
+
+    # Criar um dicionário para ordenar os clusters corretamente
+    clusters_ordenados = sorted(range(3), key=lambda i: kmeans.cluster_centers_[i, 0])
+
+    # Criando o dicionário correto de cores e classificações
+    cores = {
+        clusters_ordenados[0]: "Leve 🟢",
+        clusters_ordenados[1]: "Média 🟡",
+        clusters_ordenados[2]: "Pesada 🔴"
+    }
+
+    # Aplicando os clusters corrigidos ao DataFrame
+    df["Cluster"] = kmeans.labels_
+    df["Classificação"] = df["Cluster"].map(cores)
+
+    # 📊 Criando Gráfico
+    st.title("📊 Classificação das Mochilas por Peso 📚🎒")
+    st.write("O modelo K-Means agrupa mochilas automaticamente com base na quantidade de livros e no peso total.")
+
+    fig, ax = plt.subplots()
+    scatter = ax.scatter(X, Y, c=kmeans.labels_, cmap="viridis", s=100)
+    ax.set_xlabel("Quantidade de Livros")
+    ax.set_ylabel("Peso da Mochila (kg)")
+    ax.set_title("Clusterização das Mochilas")
+    plt.colorbar(scatter, label="Cluster")
+
+    # 🏷️ Exibir os nomes no gráfico
+    for i, txt in enumerate(dados[:, 0]):
+        ax.annotate(txt, (X[i], Y[i]), fontsize=8, xytext=(5, 5), textcoords="offset points")
+
+    st.pyplot(fig)
+
+    # Exibir a tabela com os clusters
+    st.title("📜 Dados Classificados")
+    st.dataframe(df.drop(columns=["Cluster"]))
+
+    # Previsão para um novo dado
+    st.title("🔍 Classifique uma Nova Mochila")
+    num_livros = st.number_input("📚 Quantidade de Livros:", min_value=1, max_value=10, step=1)
+
+    if st.button("Classificar"):
+        novo_dado = np.array([[num_livros]])
+        cluster_predito = kmeans.predict(novo_dado)[0]
+        classificacao = cores[cluster_predito]
+        st.success(f"A mochila inserida foi classificada como: **{classificacao}**")
