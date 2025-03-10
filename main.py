@@ -22,8 +22,8 @@ dados = np.array([
 ])
 
 # Separando X (quantidade de livros) e Y (peso da mochila)
-X = dados[:, 1].reshape(-1, 1)  # Quantidade de livros
-Y = dados[:, 2]  # Peso da mochila
+X = dados[:, 1].astype(float).reshape(-1, 1)  # Quantidade de livros (convertido para float)
+Y = dados[:, 2].astype(float)  # Peso da mochila (convertido para float)
 
 # Criando e treinando o modelo de regressão linear
 modelo = LinearRegression()
@@ -93,7 +93,7 @@ with aba1:
         st.latex(r"y = a \cdot x + b")
         st.latex(rf"y = {m:.4f} \cdot x + {b:.4f}")
         st.title("📜 Dados Utilizados para Treino")
-        df = pd.DataFrame(dados, columns=["Quantidade de Livros", "Peso da Mochila (kg)"])
+        df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)"])
         st.dataframe(df)
 
 # Aba Modelo Não Supervisionado
