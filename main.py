@@ -35,27 +35,33 @@ a = modelo.coef_[0]
 b = modelo.intercept_
 
 # Descrição do projeto
+st.title("🎒 Bem-vindo ao BookPack ML!")
 st.write(
-    """
-    🎒 **Estimativa do Peso da Mochila com Base na Quantidade de Livros**  
-    Este projeto utiliza **Aprendizado de Máquina** para prever o peso aproximado 
-    de uma mochila com base no número de livros carregados.  
-    O modelo foi treinado usando **Regressão Linear Simples**, analisando dados reais e simulados. 📚📈
+    """  
+    Você já se perguntou **quanto pesa sua mochila cheia de livros?** 📚🎒 
+    Ou gostaria de saber se está carregando peso demais? 🤔
+
+    O **BookPack ML** usa inteligência artificial para te ajudar a **prever o peso da mochila** e **classificá-la automaticamente**!
     """
 )
 
 # Criando as abas dos modelos
-aba1, aba2 = st.tabs(["🤖 Modelo Supervisionado", "🔍 Modelo Não Supervisionado"])
+aba1, aba2 = st.tabs(["🤖 **Modelo Supervisionado**", "🔍 **Modelo Não Supervisionado**"])
 
 # Aba Modelo Supervisionado
 with aba1:
     # Descrição do Modelo Supervisionado
     st.write(
     """
-    🎒 **Estimativa do Peso da Mochila com Base na Quantidade de Livros**  
-    Este projeto utiliza **Aprendizado de Máquina** para prever o peso aproximado 
-    de uma mochila com base no número de livros carregados.  
-    O modelo foi treinado usando **Regressão Linear Simples**, analisando dados reais e simulados. 📚📈
+    📊 **Como funciona o Modelo Supervisionado?**
+    
+    O Modelo Supervisionado do BookPack ML utiliza um método chamado Regressão Linear Simples para prever o peso da sua mochila com base na quantidade de livros que você está carregando. 📚🎒
+
+    🧠 **Como ele aprende?**
+
+    O modelo foi treinado com dados simulados, onde cada entrada contém: _número de livros_ e _peso total da mochila_.
+    Ele analisou os padrões nesses dados e descobriu uma relação matemática entre a quantidade de livros e o peso total.
+    Agora, sempre que você informa um número de livros, ele calcula automaticamente o peso estimado da mochila! 📈
     """
     )
 
@@ -65,9 +71,19 @@ with aba1:
     # Aba Previsão
     with aba3:
         st.title("🎒 Estimativa do Peso da Mochila")
-        st.write("Informe a quantidade de livros na mochila para obter a estimativa de peso.")
+        st.write(
+        """
+        1️⃣ Insira a **quantidade de livros** que deseja carregar.
+        """
+        )
 
         quantidade_livros = st.number_input("📚 Quantidade de livros:", min_value=1, max_value=50, step=1)
+
+        st.write(
+        """
+        2️⃣ Veja **quanto sua mochila deve pesar**!
+        """
+        )
 
         if st.button("Estimar Peso"):
             novo_valor = np.array([[quantidade_livros]])
@@ -77,6 +93,12 @@ with aba1:
             # Criando valores de X extendidos até a quantidade informada
             X_extendido = np.arange(1, quantidade_livros + 1).reshape(-1, 1)
             Y_predito = modelo.predict(X_extendido)
+
+            st.write(
+            """
+            3️⃣ Visualize o gráfico mostrando a **relação entre livros e peso**.
+            """
+            )
 
             # Criando o gráfico
             fig, ax = plt.subplots(figsize=(8, 5))
