@@ -67,30 +67,31 @@ with aba1:
         st.title("🎒 Estimativa do Peso da Mochila")
         st.write("Informe a quantidade de livros na mochila para obter a estimativa de peso.")
 
-        quantidade_livros = st.number_input("📚 Quantidade de livros:", min_value=1, max_value=10, step=1)
+        quantidade_livros = st.number_input("📚 Quantidade de livros:", min_value=1, max_value=50, step=1)
 
         if st.button("Estimar Peso"):
             novo_valor = np.array([[quantidade_livros]])
             peso_estimado = modelo.predict(novo_valor)
             st.success(f"📖 Com {quantidade_livros} livros, a mochila deve pesar cerca de {peso_estimado[0]:.2f} kg.")
 
-            # Criando o gráfico
-            fig, ax = plt.subplots(figsize=(8, 5))  # Definir tamanho do gráfico
+            # Criando valores de X extendidos até a quantidade informada
+            X_extendido = np.arange(1, quantidade_livros + 1).reshape(-1, 1)
+            Y_predito = modelo.predict(X_extendido)
 
-            ax.scatter(X, Y, color='blue', label="Dados Reais")  # Pontos reais
-            ax.plot(X, modelo.predict(X), color='red', linestyle='dashed', label="Regressão Linear")  # Linha de regressão
-            ax.scatter(novo_valor, peso_estimado, color='green', marker='o', s=100, label="Previsão")  # Previsão
+            # Criando o gráfico
+            fig, ax = plt.subplots(figsize=(8, 5))
+
+            ax.scatter(X, Y, color='blue', label="Dados Reais")
+            ax.plot(X, modelo.predict(X), color='red', linestyle='dashed', label="Regressão Linear")
+            ax.plot(X_extendido, Y_predito, color='red', linestyle='dashed', label="")
+            ax.scatter(novo_valor, peso_estimado, color='green', marker='o', s=100, label="Previsão")
 
             ax.set_xlabel("Quantidade de Livros", fontsize=12)
             ax.set_ylabel("Peso da Mochila (kg)", fontsize=12)
             ax.set_title("Estimativa do Peso da Mochila", fontsize=14)
             ax.legend()
-            ax.grid(True, linestyle='--', alpha=0.6)  # Adiciona um grid para melhor visualização
-
-            # Ajustar layout para evitar cortes
+            ax.grid(True, linestyle='--', alpha=0.6)
             fig.tight_layout()
-
-            # Exibir gráfico no Streamlit
             st.pyplot(fig)
 
 
