@@ -53,20 +53,20 @@ with aba1:
     # Descrição do Modelo Supervisionado
     st.write(
     """
-    📊 **Como funciona o Modelo Supervisionado?**
-    
-    O Modelo Supervisionado do BookPack ML utiliza um método chamado Regressão Linear Simples para prever o peso da sua mochila com base na quantidade de livros que você está carregando. 📚🎒
+    ## 📊 Como funciona o Modelo Supervisionado?
+
+    O Modelo Supervisionado do BookPack ML utiliza um método chamado **Regressão Linear Simples** para prever o peso da sua mochila com base na quantidade de livros que você está carregando. 📚🎒
 
     🧠 **Como ele aprende?**
 
     O modelo foi treinado com dados simulados, onde cada entrada contém: _número de livros_ e _peso total da mochila_.
-    Ele analisou os padrões nesses dados e descobriu uma relação matemática entre a quantidade de livros e o peso total.
+    Ele analisou os padrões nesses dados e descobriu uma relação matemática entre a quantidade de livros e o peso total.    
     Agora, sempre que você informa um número de livros, ele calcula automaticamente o peso estimado da mochila! 📈
     """
     )
 
     # Criando as abas do Modelo Supervisionado
-    aba3, aba4 = st.tabs(["📊 Previsão", "🏗️ Parâmetros do Modelo"])
+    aba3, aba4 = st.tabs(["📊 Previsão", "🏗️ Parâmetros do Modelo Supervisionado"])
 
     # Aba Previsão
     with aba3:
@@ -117,74 +117,123 @@ with aba1:
             st.pyplot(fig)
 
 
-    # Aba Parâmetros do Modelo
+    # Aba Parâmetros do Modelo Supervisionado
     with aba4:
         st.title("🏗️ Parâmetros da Regressão Linear")
         st.write(f"**Coeficiente Angular (a)**: {a:.4f} (peso médio por livro)")
         st.write(f"**Intercepto (b)**: {b:.4f} (peso da mochila sem livros)")
         st.latex(r"y = a \cdot x + b")
         st.latex(rf"y = {a:.4f} \cdot x + {b:.4f}")
+        st.write("Abaixo está a tabela com os dados utilizados:")
         st.title("📜 Dados Utilizados para Treino")
         df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)"])
         st.dataframe(df)
 
 # Aba Modelo Não Supervisionado
 with aba2:
-    # Extraindo apenas o peso da mochila para treinar o modelo
-    Y = dados[:, 2].astype(float).reshape(-1, 1)  # Peso da mochila como matriz
+    
+    # Descrição do Modelo Não Supervisionado
+    st.write(
+    """
+    ## 📊 Como funciona o Modelo Não Supervisionado?
 
-    # Criando um DataFrame para exibição no Streamlit
-    df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)"])
+    O Modelo Não Supervisionado do BookPack ML utiliza um método chamado **K-Means**, que **agrupa mochilas automaticamente** de acordo com o peso total.
 
-    # Criando o modelo K-Means com 3 clusters
-    kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
-    kmeans.fit(Y)
+    🧠 **Como ele aprende?**    
+    
+    O modelo aprende sozinho **quais mochilas pertencem a cada grupo**, sem precisar de regras pré-definidas!  
+    Agora, basta inserir um novo dado e ver em qual grupo sua mochila se encaixa! 🎒🚀
+    """
+    )
 
-    # Criar um dicionário para ordenar os clusters corretamente
-    clusters_ordenados = sorted(range(3), key=lambda i: kmeans.cluster_centers_[i, 0])
+    # Criando as abas do Modelo Não Supervisionado
+    aba5, aba6 = st.tabs(["📊 Agrupamento", "🏗️ Parâmetros do Modelo Não Supervisionado"])
+    
+    # Aba Agrupamento
+    with aba5:
+        # Extraindo apenas o peso da mochila para treinar o modelo
+        Y = dados[:, 2].astype(float).reshape(-1, 1)
 
-    # Criando o dicionário correto de cores e classificações
-    cores = {
-        clusters_ordenados[0]: "Leve 🟢",
-        clusters_ordenados[1]: "Média 🟡",
-        clusters_ordenados[2]: "Pesada 🔴"
-    }
+        # Criando um DataFrame para exibição no Streamlit
+        df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)"])
 
-    # Aplicando os clusters corrigidos ao DataFrame
-    df["Cluster"] = kmeans.labels_
-    df["Classificação"] = df["Cluster"].map(cores)
+        # Criando o modelo K-Means com 3 clusters
+        kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+        kmeans.fit(Y)
 
-    # Criando Gráfico
-    st.title("📊 Classificação das Mochilas por Peso 📚🎒")
-    st.write("O modelo K-Means agrupa mochilas automaticamente com base na quantidade de livros e no peso total.")
+        # Criar um dicionário para ordenar os clusters corretamente
+        clusters_ordenados = sorted(range(3), key=lambda i: kmeans.cluster_centers_[i, 0])
 
-    fig, ax = plt.subplots()
-    scatter = ax.scatter(X, Y, c=kmeans.labels_, cmap="viridis", s=100)
-    ax.set_xlabel("Quantidade de Livros")
-    ax.set_ylabel("Peso da Mochila (kg)")
-    ax.set_title("Clusterização das Mochilas")
+        # Criando o dicionário correto de cores e classificações
+        cores = {
+            clusters_ordenados[0]: "Leve 🟢",
+            clusters_ordenados[1]: "Média 🟡",
+            clusters_ordenados[2]: "Pesada 🔴"
+        }
 
-    for i, txt in enumerate(dados[:, 0]):
-        ax.annotate(txt, (X[i], Y[i]), fontsize=8, xytext=(5, 5), textcoords="offset points")
+        # Aplicando os clusters corrigidos ao DataFrame
+        df["Cluster"] = kmeans.labels_
+        df["Classificação"] = df["Cluster"].map(cores)
 
-    st.pyplot(fig)
+        # Criando Gráfico
+        st.title("📊 Classificação das Mochilas por Peso 📚🎒")
+        st.write("O modelo K-Means agrupa mochilas automaticamente com base na quantidade de livros e no peso total.")
 
-    # Exibir a tabela
-    st.title("📜 Dados Classificados")
-    st.dataframe(df.drop(columns=["Cluster"]))
+        fig, ax = plt.subplots()
+        scatter = ax.scatter(X, Y, c=kmeans.labels_, cmap="viridis", s=100)
+        ax.set_xlabel("Quantidade de Livros")
+        ax.set_ylabel("Peso da Mochila (kg)")
+        ax.set_title("Clusterização das Mochilas")
 
-    # Previsão para um novo dado
-    st.title("🔍 Classifique uma Nova Mochila")
-    num_livros = st.number_input("📚 Quantidade de Livros:", min_value=1, max_value=50, step=1)
+        for i, txt in enumerate(dados[:, 0]):
+            ax.annotate(txt, (X[i], Y[i]), fontsize=8, xytext=(5, 5), textcoords="offset points")
 
-    if st.button("Classificar"):
-        novo_dado = np.array([[num_livros]])
-        cluster_predito = kmeans.predict(novo_dado)[0]
-        classificacao = cores[cluster_predito]
+        st.pyplot(fig)
 
-        if classificacao == "Leve 🟢":
-            st.success(f"A mochila inserida foi classificada como: **{classificacao}**")
-        elif classificacao == "Média 🟡":
-            st.warning(f"A mochila inserida foi classificada como: **{classificacao}**")
-        else:
-            st.error(f"A mochila inserida foi classificada como: **{classificacao}**")
+
+        # Classificar para um nova mochila
+        st.title("🔍 Classifique uma Nova Mochila")
+        st.write(
+        """
+        1️⃣ Insira a **quantidade de livros** que deseja carregar.
+        """
+        )
+        num_livros = st.number_input("📚 Quantidade de Livros:", min_value=1, max_value=50, step=1)
+
+        st.write(
+        """
+        2️⃣ Veja **qual grupo sua mochila se encaixa**!
+        """
+        )
+
+        if st.button("Classificar"):
+            novo_dado = np.array([[num_livros]])
+            cluster_predito = kmeans.predict(novo_dado)[0]
+            classificacao = cores[cluster_predito]
+
+            if classificacao == "Leve 🟢":
+                st.success(f"A mochila inserida foi classificada como: **{classificacao}**")
+            elif classificacao == "Média 🟡":
+                st.warning(f"A mochila inserida foi classificada como: **{classificacao}**")
+            else:
+                st.error(f"A mochila inserida foi classificada como: **{classificacao}**")
+
+    # Parâmetros do Modelo Não Supervisionado
+    with aba6:
+        st.title("🏗️ Parâmetros do K-Means")
+        st.write(
+        """
+        O **K-Means** divide os dados em grupos chamados **clusters**, baseando-se na similaridade entre os pesos das mochilas.  
+        Cada cluster tem um **centroide**, que representa o peso médio das mochilas dentro daquele grupo.
+
+        **📌 Como os grupos são organizados?**  
+        - O algoritmo agrupa mochilas com **pesos semelhantes** automaticamente.  
+        - Nós ajustamos a ordem para que os clusters sejam classificados corretamente como **Leve, Média e Pesada**.
+
+        Abaixo está a tabela com os dados agrupados:
+        """
+        )
+        # Exibir a tabela com os dados agrupados
+        st.title("📜 Dados Classificados")
+        st.dataframe(df.drop(columns=["Cluster"]))
+
