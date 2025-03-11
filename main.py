@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.cluster import KMeans
 
-# Configuração da página
+# Título da página
 st.set_page_config(page_title="🎒 Peso da Mochila", layout="centered")
 
 # Base de dados (Nome, Quantidade de livros, Peso da mochila)
@@ -23,16 +23,16 @@ dados = np.array([
 ])
 
 # Separando X (quantidade de livros) e Y (peso da mochila)
-X = dados[:, 1].astype(float).reshape(-1, 1)  # Quantidade de livros (convertido para float)
-Y = dados[:, 2].astype(float)  # Peso da mochila (convertido para float)
+X = dados[:, 1].astype(float).reshape(-1, 1)
+Y = dados[:, 2].astype(float)
 
 # Criando e treinando o modelo de regressão linear
 modelo = LinearRegression()
 modelo.fit(X, Y)
 
 # Obtendo coeficientes do modelo
-m = modelo.coef_[0]  # Coeficiente angular (peso médio por livro)
-b = modelo.intercept_  # Intercepto (peso base da mochila)
+a = modelo.coef_[0]
+b = modelo.intercept_
 
 # Descrição do projeto
 st.write(
@@ -98,10 +98,10 @@ with aba1:
     # Aba Parâmetros do Modelo
     with aba4:
         st.title("🏗️ Parâmetros da Regressão Linear")
-        st.write(f"**Coeficiente Angular (a)**: {m:.4f} (peso médio por livro)")
+        st.write(f"**Coeficiente Angular (a)**: {a:.4f} (peso médio por livro)")
         st.write(f"**Intercepto (b)**: {b:.4f} (peso da mochila sem livros)")
         st.latex(r"y = a \cdot x + b")
-        st.latex(rf"y = {m:.4f} \cdot x + {b:.4f}")
+        st.latex(rf"y = {a:.4f} \cdot x + {b:.4f}")
         st.title("📜 Dados Utilizados para Treino")
         df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)"])
         st.dataframe(df)
