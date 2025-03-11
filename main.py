@@ -1,6 +1,6 @@
-import streamlit as st
 import numpy as np
 import pandas as pd
+import streamlit as st
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.cluster import KMeans
@@ -72,7 +72,7 @@ with aba1:
         if st.button("Estimar Peso"):
             novo_valor = np.array([[quantidade_livros]])
             peso_estimado = modelo.predict(novo_valor)
-            st.success(f"📖 Com {quantidade_livros} livros, a mochila deve pesar cerca de {peso_estimado[0]:.2f} kg.")
+            st.info(f"📖 Com {quantidade_livros} livros, a mochila deve pesar cerca de {peso_estimado[0]:.2f} kg.")
 
             # Criando valores de X extendidos até a quantidade informada
             X_extendido = np.arange(1, quantidade_livros + 1).reshape(-1, 1)
@@ -132,7 +132,7 @@ with aba2:
     df["Cluster"] = kmeans.labels_
     df["Classificação"] = df["Cluster"].map(cores)
 
-    # 📊 Criando Gráfico
+    # Criando Gráfico
     st.title("📊 Classificação das Mochilas por Peso 📚🎒")
     st.write("O modelo K-Means agrupa mochilas automaticamente com base na quantidade de livros e no peso total.")
 
@@ -141,24 +141,28 @@ with aba2:
     ax.set_xlabel("Quantidade de Livros")
     ax.set_ylabel("Peso da Mochila (kg)")
     ax.set_title("Clusterização das Mochilas")
-    plt.colorbar(scatter, label="Cluster")
 
-    # 🏷️ Exibir os nomes no gráfico
     for i, txt in enumerate(dados[:, 0]):
         ax.annotate(txt, (X[i], Y[i]), fontsize=8, xytext=(5, 5), textcoords="offset points")
 
     st.pyplot(fig)
 
-    # Exibir a tabela com os clusters
+    # Exibir a tabela
     st.title("📜 Dados Classificados")
     st.dataframe(df.drop(columns=["Cluster"]))
 
     # Previsão para um novo dado
     st.title("🔍 Classifique uma Nova Mochila")
-    num_livros = st.number_input("📚 Quantidade de Livros:", min_value=1, max_value=10, step=1)
+    num_livros = st.number_input("📚 Quantidade de Livros:", min_value=1, max_value=50, step=1)
 
     if st.button("Classificar"):
         novo_dado = np.array([[num_livros]])
         cluster_predito = kmeans.predict(novo_dado)[0]
         classificacao = cores[cluster_predito]
-        st.success(f"A mochila inserida foi classificada como: **{classificacao}**")
+
+        if classificacao == "Leve 🟢":
+            st.success(f"A mochila inserida foi classificada como: **{classificacao}**")
+        elif classificacao == "Média 🟡":
+            st.warning(f"A mochila inserida foi classificada como: **{classificacao}**")
+        else:
+            st.error(f"A mochila inserida foi classificada como: **{classificacao}**")
