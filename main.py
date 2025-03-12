@@ -8,18 +8,32 @@ from sklearn.cluster import KMeans
 # Título da página
 st.set_page_config(page_title="🎒 Peso da Mochila", layout="centered")
 
-# Base de dados (Nome, Quantidade de livros, Peso da mochila)
+# Descrição do projeto
+st.title("🎒 Bem-vindo ao BookPack ML!")
+st.write(
+    """  
+    Você já se perguntou **quanto pesa sua mochila cheia de livros?** 📚🎒 
+    Ou gostaria de saber se está carregando peso demais? 🤔
+
+    O **BookPack ML** usa inteligência artificial para te ajudar a **prever o peso da mochila** e **classificá-la automaticamente**!
+    """
+)
+
+# Dicionário para converter Tipo de Livro para número
+tipo_livro_dict = {"Revista": 1, "Literatura": 2, "Acadêmico": 3}
+
+# Base de dados (Nome, Quantidade de livros, Peso da mochila, Tipo de livro, Volume da mochila)
 dados = np.array([
-    ["Felipe", 10, 8.5], ["Carlos", 1, 1.3], ["Igor", 3, 2.8],
-    ["Alícia", 9, 7.9], ["Yasmin", 8, 7.3], ["Helena", 3, 3.1],
-    ["Eduardo", 2, 2.0], ["Ana", 1, 1.2], ["Otávio", 5, 4.9],
-    ["Davi", 10, 8.6], ["Fernanda", 2, 2.3],  ["Ester", 10, 8.8],
-    ["Zeca", 8, 6.9], ["Benício", 9, 8.0], ["Vanessa", 7, 6.2],
-    ["Daniela", 2, 2.1], ["Patrícia", 6, 5.5], ["Camila", 9, 7.7],
-    ["Gabriel", 3, 2.9], ["Marcos", 5, 4.6], ["Bruno", 1, 1.0],
-    ["Natália", 5, 4.5], ["Thiago", 7, 6.4], ["Xavier", 8, 7.1],
-    ["Larissa", 4, 3.6], ["Ricardo", 6, 5.8], ["Kaio", 4, 4.0],
-    ["Sabrina", 6, 5.3], ["Juliana", 4, 3.8], ["William", 7, 6.7]
+    ["Felipe", 10, 8.5, "Acadêmico", 35],
+    ["Carlos", 1, 1.3, "Revista", 15],
+    ["Igor", 3, 2.8, "Literatura", 22],
+    ["Alícia", 9, 7.9, "Acadêmico", 30],
+    ["Yasmin", 8, 7.3, "Literatura", 28],
+    ["Helena", 3, 3.1, "Revista", 20],
+    ["Eduardo", 2, 2.0, "Literatura", 18],
+    ["Ana", 1, 1.2, "Revista", 16],
+    ["Otávio", 5, 4.9, "Acadêmico", 25],
+    ["Davi", 10, 8.6, "Acadêmico", 40]
 ])
 
 # Separando X (quantidade de livros) e Y (peso da mochila)
@@ -236,4 +250,3 @@ with aba2:
         # Exibir a tabela com os dados agrupados
         st.title("📜 Dados Classificados")
         st.dataframe(df.drop(columns=["Cluster"]))
-
