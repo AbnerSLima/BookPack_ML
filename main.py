@@ -8,17 +8,6 @@ from sklearn.cluster import KMeans
 # Título da página
 st.set_page_config(page_title="🎒 Peso da Mochila", layout="centered")
 
-# Descrição do projeto
-st.title("🎒 Bem-vindo ao BookPack ML!")
-st.write(
-    """  
-    Você já se perguntou **quanto pesa sua mochila cheia de livros?** 📚🎒 
-    Ou gostaria de saber se está carregando peso demais? 🤔
-
-    O **BookPack ML** usa inteligência artificial para te ajudar a **prever o peso da mochila** e **classificá-la automaticamente**!
-    """
-)
-
 # Dicionário para converter Tipo de Livro para número
 tipo_livro_dict = {"Revista": 1, "Literatura": 2, "Acadêmico": 3}
 
@@ -140,7 +129,8 @@ with aba1:
         st.latex(rf"y = {a:.4f} \cdot x + {b:.4f}")
         st.write("Abaixo está a tabela com os dados utilizados:")
         st.title("📜 Dados Utilizados para Treino")
-        df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)"])
+
+        df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)", "Tipo de Livro", "Volume da Mochila"])
         st.dataframe(df)
 
 # Aba Modelo Não Supervisionado
@@ -169,7 +159,7 @@ with aba2:
         Y = dados[:, 2].astype(float).reshape(-1, 1)
 
         # Criando um DataFrame para exibição no Streamlit
-        df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)"])
+        df = pd.DataFrame(dados, columns=["Nome", "Quantidade de Livros", "Peso da Mochila (kg)", "Tipo de Livro", "Volume da Mochila"])
 
         # Criando o modelo K-Means com 3 clusters
         kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
